@@ -42,7 +42,8 @@ dependencies:
   flutter_screenutil:
   google_fonts:
   font_awesome_flutter:
-  video_player:
+  video_player: ^2.4.7
+  youtube_player_flutter: ^8.1.1
 
 
 dev_dependencies:

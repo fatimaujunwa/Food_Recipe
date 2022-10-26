@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:food_recipe_review/app_colors.dart';
 import 'package:food_recipe_review/text_dimensions.dart';
 import 'package:video_player/video_player.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class DetailPage extends StatefulWidget {
   const DetailPage({Key? key}) : super(key: key);
@@ -89,8 +90,12 @@ class _DetailPageState extends State<DetailPage> {
     isPlaying=playing;
 
   }
+
+  //https://img.bslmeiyu.com/uploads/20170706/The%20Bananas%20Song%20%20Counting%20Bananas%20%20Super%20Simple%20Songs.mp4
+//https://www.youtube.com/watch?v=4aZr5hZXP_s
+  // https://www.youtube.com/watch?v=KpP73uE1688&list=RDKpP73uE1688&start_radio=1
   onTapVideo(int i){
-    final controller =VideoPlayerController.network("https://img.bslmeiyu.com/uploads/20170706/The%20Bananas%20Song%20%20Counting%20Bananas%20%20Super%20Simple%20Songs.mp4");
+    final controller =VideoPlayerController.network("https://www.youtube.com/watch?v=4aZr5hZXP_s");
     final old =_controller;
     _controller=controller;
     if(old!=null){
@@ -112,7 +117,16 @@ class _DetailPageState extends State<DetailPage> {
         });
       });
   }
-
+  late YoutubePlayerController controller;
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+ final videoID=YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=BBAyRBTfsOU");
+ controller=YoutubePlayerController(initialVideoId: videoID!,
+   flags:  const YoutubePlayerFlags(autoPlay: false)
+ );
+  }
   bool playArea=false;
 
 @override
@@ -127,300 +141,30 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return
-   Scaffold(
-      body:
-
-      Container(
-        decoration:playArea==false?
-        BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Colors.blueAccent.shade100,
-            Colors.lightBlueAccent.shade100
-          ], end: Alignment.bottomRight, begin: Alignment.bottomLeft),
-        ):BoxDecoration(
-            color: Colors.lightBlueAccent.shade100
-        ),
-        child:
-        Column(
-          children: [
-            SafeArea(
-              child:playArea==false? Container(
-                margin: EdgeInsets.all(25),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        InkWell(
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.white,
-                          ),
-                          onTap: () {
-                           Navigator.pop(context);
-                          },
-                        ),
-                        Expanded(
-                          child: Container(),
-                        ),
-                        Icon(
-                          Icons.settings,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Legs Toning\nand glutes Workout',
-                      style: TextStyle(
-                        fontSize: 23,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          width: 90,
-                          decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.alarm,
-                                color: Colors.white,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                '60 min',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 30,
-                        ),
-                        Container(
-                          width: 200,
-                          decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.handyman,
-                                color: Colors.white,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'Resistant band, Kettlebell',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ):
-              Container(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(left: 25, right: 25),
-                      height: 100,
-                      child: Row(
-                        children: [
-                          InkWell(
-                            child: Icon(Icons.arrow_back_ios,
-                              size: 20,
-                              color: Colors.white,),
-                          ),
-                          Expanded(child: Container()),
-                          Icon(Icons.info_outline,size: 20,
-                            color: Colors.white,),
-
-                        ],
-                      ),
-                    ),
-                    playView(context),
-                    controlView(context),
-                  ],
-                ),
+    return Scaffold(
+      body: Column(children: [
+        YoutubePlayer(controller: controller,
+          showVideoProgressIndicator: true,
+          onReady: ()=>debugPrint("ready"),
+          bottomActions: [
+            CurrentPosition(),
+            ProgressBar(
+              isExpanded: true,
+              colors: ProgressBarColors(
+                playedColor: Colors.red,
+                handleColor: Colors.white
               ),
             ),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(60),
-                    )),
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 25, left: 25, right: 25),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            height: 50,
-                          ),
-                          Text(
-                            'Circuit 1: Legs Toning',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15),
-                          ),
-                          Expanded(
-                            child: Container(),
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.loop,
-                                color: Colors.blue.shade300,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                '3 sets',
-                                style: TextStyle(),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                          itemCount: 5,
-                          itemBuilder: (_, i) {
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  onTapVideo(i);
-                                  if(playArea==false){
-                                    playArea=true;
-                                  }
-                                });
+            PlaybackSpeedButton()
 
-                              }
-                              ,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 30, vertical: 8),
-                                height: 135,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 80,
-                                          height: 80,
-                                          decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                            BorderRadius.circular(10),
-                                            // image: DecorationImage(
-                                            //     image: AssetImage(
-                                            //         info[i]["thumbnail"]),
-                                            //     fit: BoxFit.fill),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'text',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Text(
-                                              'text',
-                                              style: TextStyle(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.4)),
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 18,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 80,
-                                          height: 20,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffeaeefc),
-                                              borderRadius:
-                                              BorderRadius.circular(10)),
-                                          child: Center(
-                                            child: Text(
-                                              '15s rest',
-                                              style: TextStyle(
-                                                  color: Color(0xff8339fed)),
-                                            ),
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            for(int i=0;i<70;i++)
-                                              i.isEven?Container(
-                                                height: 1,
-                                                width: 3,
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xffffffff),
-                                                    borderRadius: BorderRadius.circular(2)
-                                                ),
-                                              ):Container(
-                                                height: 1,
-                                                width: 3,
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xff839fed),
-                                                    borderRadius: BorderRadius.circular(2)
-                                                ),
-                                              )
-
-                                          ],
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                    )
-                  ],
-                ),
-              ),
-            ),
           ],
-        ),
-      ),
+
+
+        )
+
+      ],),
     );
+
 
 //       Scaffold(
 //         backgroundColor: Colors.white,
@@ -605,3 +349,64 @@ class _DetailPageState extends State<DetailPage> {
 //         );
   }
 }
+class YouTubePlayer extends StatefulWidget {
+  const YouTubePlayer({Key? key}) : super(key: key);
+
+  @override
+  State<YouTubePlayer> createState() => _YouTubePlayerState();
+}
+
+class _YouTubePlayerState extends State<YouTubePlayer> {
+  late YoutubePlayerController controller;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    const url="https://www.youtube.com/watch?v=BBAyRBTfsOU";
+    controller=YoutubePlayerController(initialVideoId: url!,
+        flags:  const YoutubePlayerFlags(autoPlay: false)
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return YoutubePlayerBuilder(player: YoutubePlayer(controller: controller,),
+
+
+        builder: (context,player){
+          return Scaffold(
+            body: Column(children: [
+              YoutubePlayer(controller: controller,
+                showVideoProgressIndicator: true,
+                onReady: ()=>debugPrint("ready"),
+                bottomActions: [
+                  CurrentPosition(),
+                  ProgressBar(
+                    isExpanded: true,
+                    colors: ProgressBarColors(
+                        playedColor: Colors.red,
+                        handleColor: Colors.white
+                    ),
+                  ),
+                  PlaybackSpeedButton()
+
+                ],
+
+
+              ),
+              ElevatedButton(onPressed: (){
+                const url="https://www.youtube.com/watch?v=BBAyRBTfsOU";
+controller.toggleFullScreenMode();
+if(controller.value.isPlaying){
+  controller.pause();
+}
+else{
+  controller.play();
+}
+              }, child: Text('Play'))
+
+            ],),
+          );
+        });
+  }
+}
+

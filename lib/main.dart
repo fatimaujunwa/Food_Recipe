@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child:
         Scaffold(
 
-    body:DetailPage()
+    body:YouTubePlayer()
 //     Column(
 //       children: [
 
